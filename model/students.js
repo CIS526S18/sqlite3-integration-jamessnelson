@@ -15,7 +15,7 @@ module.exports = {
 /* Load sync files into a global variable
  * This serves as an in-memory cache for speedy access.
  */
-var students = JSON.parse(fs.readFileSync("students.json", {encoding: 'utf-8'}));
+var students = JSON.parse(fs.readFileSync("data/students.json", {encoding: 'utf-8'}));
 
 
 /** @function getStudents
@@ -46,7 +46,7 @@ function addStudent(student, callback) {
   // Add the student to the in-memory cache
   students.push(sanitizedStudent);
   // Save the cache to persistent storage (our JSON file)
-  fs.writeFile('students.json', JSON.stringify(students), 'utf-8', function(err) {
+  fs.writeFile('data/students.json', JSON.stringify(students), 'utf-8', function(err) {
     // If there was an error writing the student
     // to persistent storage, pass it along
     if(err) return callback(err);

@@ -1,5 +1,5 @@
-const studentIndex = require('../view/students/index');
 const studentModel = require('../model/students');
+const view = require('../view/view.js');
 const parseBody = require('../helpers/parse-body');
 
 /** @module controller/students
@@ -17,9 +17,8 @@ module.exports = {
   */
 function list(req, res) {
   var students = studentModel.getStudents();
-  var html = studentIndex(students);
   res.setHeader('Content-Type', 'text/html');
-  res.end(html);
+  res.end(view.render('students/index.html', {students: students}));
 }
 
 /** @function create
