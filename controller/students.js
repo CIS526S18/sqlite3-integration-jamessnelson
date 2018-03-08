@@ -16,9 +16,15 @@ module.exports = {
   * @param {http.ServerResponse} res - the response object
   */
 function list(req, res) {
-  var students = studentModel.getStudents();
-  res.setHeader('Content-Type', 'text/html');
-  res.end(view.render('students/index.html', {students: students}));
+  studentModel.getStudents(function(err, students){
+    if(err) {
+      res.statusCode = 500;
+      res.end("Server error");
+      return;
+    }
+    res.setHeader('Content-Type', 'text/html');
+    //WHAT DID HE HAVE HERE?
+  })
 }
 
 /** @function create

@@ -1,6 +1,12 @@
 /* load dependencies */
 const fs = require('fs');
+const sqlite3 = require('sqlite3');
+
 const escapeHTML = require('../helpers/escape-html');
+const studentController = require('./controller/students');
+
+// Create database
+var db = new sqlite3.Database('./data/roster.sqlite3');
 
 // TODO: Add a removeStudent function
 
@@ -15,16 +21,19 @@ module.exports = {
 /* Load sync files into a global variable
  * This serves as an in-memory cache for speedy access.
  */
-var students = JSON.parse(fs.readFileSync("data/students.json", {encoding: 'utf-8'}));
+//var students = JSON.parse(fs.readFileSync("data/students.json", {encoding: 'utf-8'}));
 
 
 /** @function getStudents
   * Provides a list of students
   * @return {Array} array of student objects
   */
-function getStudents() {
+function getStudents(callback) {
   // Clone and return the student object
-  return JSON.parse(JSON.stringify(students));
+  //return JSON.parse(JSON.stringify(students));
+  return db.all("SELECT * FROM students", function(err, rows){
+    callback(err, rows);
+  });
 }
 
 /** @function addStudent
@@ -46,11 +55,17 @@ function addStudent(student, callback) {
   // Add the student to the in-memory cache
   students.push(sanitizedStudent);
   // Save the cache to persistent storage (our JSON file)
-  fs.writeFile('data/students.json', JSON.stringify(students), 'utf-8', function(err) {
+  //fs.writeFile('data/students.json', JSON.stringify(students), 'utf-8', function(err) {
     // If there was an error writing the student
     // to persistent storage, pass it along
-    if(err) return callback(err);
+    /*if(err) return callback(err);
     // Otherwise, trigger our callback with a clone of the student
     callback(false, JSON.parse(JSON.stringify(sanitizedStudent)))
-  });
+  }); */
+
+  db.run("INSERT INTO students (name, eid, descrition) VALUES ("
+    + sanitizedStudent.name + "`,``"
+    + sanitizedStudent.eid + "`,`"
+    + sanitizedStudent.descrition +
+    ")");
 }
